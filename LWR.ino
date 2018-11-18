@@ -48,7 +48,7 @@ void SendCommand(String command){
 void setup() {
   Serial.begin(115200);
   delay(20);
-  pinMode(BUILTIN_LED, OUTPUT);   // set onboard LED as output
+  pinMode(LED_BUILTIN, OUTPUT);   // set onboard LED as output
   pinMode(inputPin, INPUT);       // set pin as input
   
   // We start by connecting to a WiFi network
@@ -87,9 +87,9 @@ void loop() {
     SendCommand("/cam.cgi?mode=camcmd&value=capture");
     SendCommand("/cam.cgi?mode=camcmd&value=capture_cancel");
     for (int i = 0; i < 3; i++){
-      digitalWrite(BUILTIN_LED, LOW);
+      digitalWrite(LED_BUILTIN, LOW);
       delay(100);
-      digitalWrite(BUILTIN_LED, HIGH);
+      digitalWrite(LED_BUILTIN, HIGH);
       delay(100);
     }
   }  
