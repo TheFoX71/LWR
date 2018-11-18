@@ -1,11 +1,15 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 
+
 ESP8266WiFiMulti WiFiMulti;
 // Use WiFiClient class to create TCP connections
 WiFiClient client;
 const uint16_t port = 80;
 const char * host = "192.168.54.1"; // ip or dns
+
+int inputPin = D3;  // pushbutton connected to digital pin D3
+int val = 0;        // variable to store the read value
 
 // Send HTTP Command to LIMIX shit camera
 void SendCommand(String command){
@@ -44,11 +48,13 @@ void SendCommand(String command){
 void setup() {
   Serial.begin(115200);
   delay(20);
-
+  pinMode(BUILTIN_LED, OUTPUT);   // set onboard LED as output
+  pinMode(inputPin, INPUT);       // set pin as input
+  
   // We start by connecting to a WiFi network
   WiFi.mode(WIFI_STA);
   WiFiMulti.addAP("GM1-8F985B", "a1c994c8f985b");
-
+  
   Serial.println();
   Serial.println();
   Serial.print("Wait for WiFi... ");
@@ -76,8 +82,15 @@ void setup() {
 
 
 void loop() {
-
-  // SendCommand("/cam.cgi?mode=camcmd&value=capture");
-  // SendCommand("/cam.cgi?mode=camcmd&value=capture_cancel");
-  
+  val = digitalRead(inputPin); // read the input pin
+  if (val == HIGH){
+    SendCommand("/cam.cgi?mode=camcmd&value=capture");
+    SendCommand("/cam.cgi?mode=camcmd&value=capture_cancel");
+    for (int i = 0; i < 3; i++){
+      digitalWrite(BUILTIN_LED, LOW);
+      delay(100);
+      digitalWrite(BUILTIN_LED, HIGH);
+      delay(100);
+    }
+  }  
 }
